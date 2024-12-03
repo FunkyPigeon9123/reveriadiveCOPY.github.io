@@ -3897,22 +3897,30 @@ ti &&
 
                     let obj = Object.fromEntries(new URLSearchParams(t.data));
                     let items = {0: "Carrot Soup", 1: "Apple Juice", 2: "Vegetable Stew", 3: "Tomato Soup", 4: "Boiled Veg", 5: "Summer Nectar"};
+                    let itemLocations = {
+                        "Carrot Soup": "Sold by Farmer's Market in Port Town",
+                        "Apple Juice": "Sold by the Castele Market Vendor",
+                        "Vegetable Stew": "Sold by the Chef's Shop in the Capital",
+                        "Tomato Soup": "Sold by the Chef in the Port Town Tavern",
+                        "Boiled Veg": "Sold by the Farmer's Stall in Castele",
+                        "Summer Nectar": "Sold by the Exotic Fruits Vendor in the South"
+                    };
                     let recipes = {"Carrot Soup": ["Fledgling", "2 × Carrot"], "Apple Juice": ["Fledgling", "2 × Castele Apple"], "Vegetable Stew": ["Apprentice", "1 × Carrot 1 × Potato 1 × Onion"], "Tomato Soup": ["Apprentice", "2 × Tomato 1 × Bell Pepper 2 × Spring Water"], "Boiled Veg": ["Apprentice", "2 × Carrot 2 × Broccoli 2 × Mountain Mushroom"], "Summer Nectar": ["Adept", "1 × Port Town Orange 1 × Southern Papaya 1 × Wild Kiwi"]};
 
                     // Initialize the item list display area
                     document.getElementById("itemList").innerHTML = '<h3 align="center">The recipes will be displayed here.</h3><h4 align="center">(Contact Luarst#2391 on discord if any recipes are labelled incorrect.)</h4>';
                     
-                    // Function to display the items in the shop
+                    // Function to display the items and their purchase locations
                     function displayItems() {
-                        let itemDisplayHTML = '<h3>Available Items:</h3><ul>';
+                        let itemDisplayHTML = '<h3>Available Items and Where to Buy:</h3><ul>';
                         for (const itemId in items) {
-                            itemDisplayHTML += `<li><a href="https://fantasy-life.fandom.com/wiki/${items[itemId]}">${items[itemId]}</a></li>`;
+                            itemDisplayHTML += `<li>${items[itemId]} - <strong>${itemLocations[items[itemId]]}</strong></li>`;
                         }
                         itemDisplayHTML += '</ul>';
                         document.getElementById("itemList").innerHTML += itemDisplayHTML;
                     }
 
-                    // Call the displayItems function to show items
+                    // Call the displayItems function to show items and where to buy them
                     displayItems();
 
                     // Continue with existing logic to process recipes
