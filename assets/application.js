@@ -3924,10 +3924,38 @@ ti &&
                     // Initialize the item list display area
                     document.getElementById("itemList").innerHTML = '<h3 align="center">The recipes will be displayed here.</h3><h4 align="center">(Contact Luarst#2391 on discord if any recipes are labelled incorrect.)</h4>';
 
-                    // Function to display the recipes and where to buy the ingredients
+                    // Function to check if a recipe contains selected ingredients
+                    function isRecipeValid(recipe) {
+                        // Loop over all ingredients in the recipe
+                        let ingredients = recipe[1].split(" "); // Split ingredients by spaces
+                        for (let i = 0; i < ingredients.length; i += 2) {
+                            let amount = ingredients[i]; // amount (e.g., "2")
+                            let ingredient = ingredients[i + 1]; // ingredient name (e.g., "Carrot")
+                            
+                            // If ingredient is missing or not in the location map, it's invalid
+                            if (!ingredientLocations[ingredient]) {
+                                return false;
+                            }
+                        }
+                        return true; // If all ingredients are valid, the recipe is valid
+                    }
+
+                    // Function to display recipes based on available ingredients
                     function displayRecipeIngredients() {
-                        // Loop over the selected recipes
+                        let selectedRecipes = []; // Store recipes that match the selected ingredients
+                        
+                        // Loop over the recipes and filter by validity
                         for (const recipeName in recipes) {
+                            let recipe = recipes[recipeName];
+
+                            // Check if this recipe contains valid ingredients
+                            if (isRecipeValid(recipe)) {
+                                selectedRecipes.push(recipeName);
+                            }
+                        }
+
+                        // Now, display only the valid recipes
+                        selectedRecipes.forEach(recipeName => {
                             let recipe = recipes[recipeName];
                             let level = recipe[0];
                             let ingredients = recipe[1];
@@ -3960,7 +3988,7 @@ ti &&
                                     <ul>${ingredientLocationsList}</ul>
                                 `;
                             }
-                        }
+                        });
                     }
 
                     // Call the displayRecipeIngredients function to show recipes and where to buy the ingredients
