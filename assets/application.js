@@ -3942,54 +3942,58 @@ ti &&
 
                     // Function to display recipes based on available ingredients
                     function displayRecipeIngredients() {
-                        let selectedRecipes = []; // Store recipes that match the selected ingredients
-                        
-                        // Loop over the recipes and filter by validity
-                        for (const recipeName in recipes) {
-                            let recipe = recipes[recipeName];
+    let selectedRecipes = []; // Store recipes that match the selected ingredients
+    console.log('Displaying recipes...'); // Debugging line
 
-                            // Check if this recipe contains valid ingredients
-                            if (isRecipeValid(recipe)) {
-                                selectedRecipes.push(recipeName);
-                            }
-                        }
+    // Loop over the recipes and filter by validity
+    for (const recipeName in recipes) {
+        let recipe = recipes[recipeName];
+        console.log('Checking recipe:', recipeName); // Debugging line
 
-                        // Now, display only the valid recipes
-                        selectedRecipes.forEach(recipeName => {
-                            let recipe = recipes[recipeName];
-                            let level = recipe[0];
-                            let ingredients = recipe[1];
+        // Check if this recipe contains valid ingredients
+        if (isRecipeValid(recipe)) {
+            selectedRecipes.push(recipeName);
+        }
+    }
 
-                            // Split the ingredients into individual items (adjusted splitting logic)
-                            let ingredientList = ingredients.split(" ");
-                            let ingredientLocationsList = "";
+    console.log('Valid recipes:', selectedRecipes); // Debugging line
 
-                            // Parse the ingredient list correctly
-                            for (let i = 0; i < ingredientList.length; i += 2) {
-                                let amount = ingredientList[i]; // amount (e.g., "2")
-                                let ingredient = ingredientList[i + 1]; // ingredient name (e.g., "Carrot")
-                                
-                                if (!ingredient || !ingredientLocations[ingredient]) {
-                                    // If ingredient or location is missing, skip this iteration
-                                    continue;
-                                }
-                                
-                                // Look up the location of the ingredient
-                                let location = ingredientLocations[ingredient] || "Unknown Location";
-                                
-                                ingredientLocationsList += `<li>${amount} × ${ingredient} - <strong>Available at ${location}</strong></li>`;
-                            }
+    // Now, display only the valid recipes
+    selectedRecipes.forEach(recipeName => {
+        let recipe = recipes[recipeName];
+        let level = recipe[0];
+        let ingredients = recipe[1];
 
-                            // If there are valid ingredients for this recipe
-                            if (ingredientLocationsList) {
-                                document.getElementById("itemList").innerHTML += `
-                                    <h2 style="text-align:center">${recipeName}</h2>
-                                    <p><strong>Level Required:</strong> ${level}</p>
-                                    <ul>${ingredientLocationsList}</ul>
-                                `;
-                            }
-                        });
-                    }
+        // Split the ingredients into individual items (adjusted splitting logic)
+        let ingredientList = ingredients.split(" ");
+        let ingredientLocationsList = "";
+
+        // Parse the ingredient list correctly
+        for (let i = 0; i < ingredientList.length; i += 2) {
+            let amount = ingredientList[i]; // amount (e.g., "2")
+            let ingredient = ingredientList[i + 1]; // ingredient name (e.g., "Carrot")
+
+            if (!ingredient || !ingredientLocations[ingredient]) {
+                // If ingredient or location is missing, skip this iteration
+                continue;
+            }
+
+            // Look up the location of the ingredient
+            let location = ingredientLocations[ingredient] || "Unknown Location";
+
+            ingredientLocationsList += `<li>${amount} × ${ingredient} - <strong>Available at ${location}</strong></li>`;
+        }
+
+        // If there are valid ingredients for this recipe
+        if (ingredientLocationsList) {
+            document.getElementById("itemList").innerHTML += `
+                <h2 style="text-align:center">${recipeName}</h2>
+                <p><strong>Level Required:</strong> ${level}</p>
+                <ul>${ingredientLocationsList}</ul>
+            `;
+        }
+    });
+}
 
                     // Call the displayRecipeIngredients function to show recipes and where to buy the ingredients
                     displayRecipeIngredients();
