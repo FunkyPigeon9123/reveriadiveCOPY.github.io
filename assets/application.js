@@ -3926,19 +3926,19 @@ ti &&
 
                     // Function to check if a recipe contains selected ingredients
                     function isRecipeValid(recipe) {
-                        // Loop over all ingredients in the recipe
-                        let ingredients = recipe[1].split(" "); // Split ingredients by spaces
-                        for (let i = 0; i < ingredients.length; i += 2) {
-                            let amount = ingredients[i]; // amount (e.g., "2")
-                            let ingredient = ingredients[i + 1]; // ingredient name (e.g., "Carrot")
-                            
-                            // If ingredient is missing or not in the location map, it's invalid
-                            if (!ingredientLocations[ingredient]) {
-                                return false;
-                            }
-                        }
-                        return true; // If all ingredients are valid, the recipe is valid
-                    }
+		    let ingredients = recipe[1].split(/ (\d+) × /);  // Split on the " × " part to separate ingredients
+		    console.log(ingredients);
+		    for (let i = 1; i < ingredients.length; i += 2) { // Skip over amounts
+		        let ingredient = ingredients[i];
+		
+		        if (!ingredientLocations[ingredient]) {
+		            console.log(`Ingredient not found: ${ingredient}`);
+		            return false;  // If no location is found for an ingredient, return false
+		        }
+		    }
+		    return true;
+		}
+			console.log('ingredientLocations:', ingredientLocations);
 
                     // Function to display recipes based on available ingredients
                     function displayRecipeIngredients() {
