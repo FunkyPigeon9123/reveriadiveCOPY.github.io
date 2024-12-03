@@ -3896,60 +3896,67 @@ ti &&
                     for (o in n) void 0 !== n[o] && r.setRequestHeader(o, n[o] + "");
 
                     let obj = Object.fromEntries(new URLSearchParams(t.data));
-                    let items = {0: "Carrot Soup", 1: "Apple Juice", 2: "Vegetable Stew", 3: "Tomato Soup", 4: "Boiled Veg", 5: "Summer Nectar"};
-                    let itemLocations = {
-                        "Carrot Soup": "Sold by Farmer's Market in Port Town",
-                        "Apple Juice": "Sold by the Castele Market Vendor",
-                        "Vegetable Stew": "Sold by the Chef's Shop in the Capital",
-                        "Tomato Soup": "Sold by the Chef in the Port Town Tavern",
-                        "Boiled Veg": "Sold by the Farmer's Stall in Castele",
-                        "Summer Nectar": "Sold by the Exotic Fruits Vendor in the South"
+                    let recipes = {
+                        "Carrot Soup": ["Fledgling", "2 × Carrot"],
+                        "Apple Juice": ["Fledgling", "2 × Castele Apple"],
+                        "Vegetable Stew": ["Apprentice", "1 × Carrot 1 × Potato 1 × Onion"],
+                        "Tomato Soup": ["Apprentice", "2 × Tomato 1 × Bell Pepper 2 × Spring Water"],
+                        "Boiled Veg": ["Apprentice", "2 × Carrot 2 × Broccoli 2 × Mountain Mushroom"],
+                        "Summer Nectar": ["Adept", "1 × Port Town Orange 1 × Southern Papaya 1 × Wild Kiwi"]
                     };
-                    let recipes = {"Carrot Soup": ["Fledgling", "2 × Carrot"], "Apple Juice": ["Fledgling", "2 × Castele Apple"], "Vegetable Stew": ["Apprentice", "1 × Carrot 1 × Potato 1 × Onion"], "Tomato Soup": ["Apprentice", "2 × Tomato 1 × Bell Pepper 2 × Spring Water"], "Boiled Veg": ["Apprentice", "2 × Carrot 2 × Broccoli 2 × Mountain Mushroom"], "Summer Nectar": ["Adept", "1 × Port Town Orange 1 × Southern Papaya 1 × Wild Kiwi"]};
+
+                    // Ingredient locations - where to buy ingredients
+                    let ingredientLocations = {
+                        "Carrot": "Farmer's Market in Port Town",
+                        "Castele Apple": "Castele Market Vendor",
+                        "Potato": "Farmer's Stall in Castele",
+                        "Onion": "Castele General Store",
+                        "Tomato": "Tomato Farm in the Capital",
+                        "Bell Pepper": "Vegetable Stand in Port Town",
+                        "Spring Water": "Water Source near Port Town",
+                        "Broccoli": "Farmers Market in Capital",
+                        "Mountain Mushroom": "Forest near the Capital",
+                        "Port Town Orange": "Tropical Fruits Market",
+                        "Southern Papaya": "Tropical Fruits Vendor in South",
+                        "Wild Kiwi": "Exotic Fruits Stall in South"
+                    };
 
                     // Initialize the item list display area
                     document.getElementById("itemList").innerHTML = '<h3 align="center">The recipes will be displayed here.</h3><h4 align="center">(Contact Luarst#2391 on discord if any recipes are labelled incorrect.)</h4>';
-                    
-                    // Function to display the items and their purchase locations
-                    function displayItems() {
-                        let itemDisplayHTML = '<h3>Available Items and Where to Buy:</h3><ul>';
-                        for (const itemId in items) {
-                            itemDisplayHTML += `<li>${items[itemId]} - <strong>${itemLocations[items[itemId]]}</strong></li>`;
-                        }
-                        itemDisplayHTML += '</ul>';
-                        document.getElementById("itemList").innerHTML += itemDisplayHTML;
-                    }
 
-                    // Call the displayItems function to show items and where to buy them
-                    displayItems();
+                    // Function to display the recipes and where to buy the ingredients
+                    function displayRecipeIngredients() {
+                        for (const recipeName in recipes) {
+                            let recipe = recipes[recipeName];
+                            let level = recipe[0];
+                            let ingredients = recipe[1];
 
-                    // Continue with existing logic to process recipes
-                    for (const object in Object.keys(obj)) {
-                        let key = Object.keys(obj)[object];
-                        let value = Object.values(obj)[object];
-                        if (key.includes("recipes")) {
-                            if (parseInt(value)) {
-                                let item = Number(key.substr(7).replace(/\[|]/g, ""));
-                                if (item >= 91 && item <= 588) item -= 91;
-                                else if (item >= 589) item -= 1;
-                                else item += 498;
+                            // Split the ingredients into individual items
+                            let ingredientList = ingredients.split(" ");
+                            let ingredientLocationsList = "";
+
+                            // Check where each ingredient can be found
+                            for (let i = 0; i < ingredientList.length; i += 2) {
+                                let amount = ingredientList[i]; // amount (e.g., "2")
+                                let ingredient = ingredientList[i + 1]; // ingredient name (e.g., "Carrot")
                                 
-                                console.log(`${Object.values(recipes)[item][0]} : ${document.getElementById("recipes_" + key.substr(7).replace(/\[|]/g, "")).parentNode.parentNode.children[0].innerText}`);
-                                let item_list = Object.values(recipes)[item][1].substr(4).replace(/ \d [^\w\w+]/ig, ',').split(', ');
-                                let item_amount = Object.values(recipes)[item][1].replace(/ \W w*/).match(/\d+/ig);
-                                console.log(item_amount);
-                                console.log(item_list);
-                                console.log(document.getElementById("recipes_" + key.substr(7).replace(/\[|]/g, "")).parentNode.parentNode.children[0].innerText);
-                                document.getElementById("itemList").innerHTML += `<h2 style="text-align:center">${Object.values(recipes)[item][0]}</h2>`;
-                                document.getElementById("itemList").innerHTML += `<div class="panel-body"><a href="https://fantasy-life.fandom.com/wiki/${document.getElementById("recipes_" + key.substr(7).replace(/\[|]/g, "")).parentNode.parentNode.children[0].innerText}">${document.getElementById("recipes_" + key.substr(7).replace(/\[|]/g, "")).parentNode.parentNode.children[0].innerText}</a></div>`;
-                                for (const itemrecipe in item_list) {
-                                    document.getElementById("itemList").innerHTML += `<ol><li style="list-style-type:disc">${item_list[itemrecipe]} ×${item_amount[itemrecipe] * value}</li></ol>`;
-                                }
+                                // Look up the location of the ingredient
+                                let location = ingredientLocations[ingredient] || "Unknown Location";
+                                
+                                ingredientLocationsList += `<li>${amount} × ${ingredient} - <strong>Available at ${location}</strong></li>`;
                             }
-                        } else {
-                            console.log("Challenges " + key.substr(10).replace(/\[|]/g, ""));
+
+                            // Add the recipe and its ingredients with locations to the display
+                            document.getElementById("itemList").innerHTML += `
+                                <h2 style="text-align:center">${recipeName}</h2>
+                                <p><strong>Level Required:</strong> ${level}</p>
+                                <ul>${ingredientLocationsList}</ul>
+                            `;
                         }
                     }
+
+                    // Call the displayRecipeIngredients function to show recipes and where to buy the ingredients
+                    displayRecipeIngredients();
 
                     e = function (n, o) {
                         var a, l, c;
