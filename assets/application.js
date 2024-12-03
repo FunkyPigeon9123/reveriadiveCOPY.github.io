@@ -3926,19 +3926,25 @@ ti &&
 
                     // Function to display the recipes and where to buy the ingredients
                     function displayRecipeIngredients() {
+                        // Loop over the selected recipes
                         for (const recipeName in recipes) {
                             let recipe = recipes[recipeName];
                             let level = recipe[0];
                             let ingredients = recipe[1];
 
-                            // Split the ingredients into individual items
+                            // Split the ingredients into individual items (adjusted splitting logic)
                             let ingredientList = ingredients.split(" ");
                             let ingredientLocationsList = "";
 
-                            // Check where each ingredient can be found
+                            // Parse the ingredient list correctly
                             for (let i = 0; i < ingredientList.length; i += 2) {
                                 let amount = ingredientList[i]; // amount (e.g., "2")
                                 let ingredient = ingredientList[i + 1]; // ingredient name (e.g., "Carrot")
+                                
+                                if (!ingredient || !ingredientLocations[ingredient]) {
+                                    // If ingredient or location is missing, skip this iteration
+                                    continue;
+                                }
                                 
                                 // Look up the location of the ingredient
                                 let location = ingredientLocations[ingredient] || "Unknown Location";
@@ -3946,12 +3952,14 @@ ti &&
                                 ingredientLocationsList += `<li>${amount} × ${ingredient} - <strong>Available at ${location}</strong></li>`;
                             }
 
-                            // Add the recipe and its ingredients with locations to the display
-                            document.getElementById("itemList").innerHTML += `
-                                <h2 style="text-align:center">${recipeName}</h2>
-                                <p><strong>Level Required:</strong> ${level}</p>
-                                <ul>${ingredientLocationsList}</ul>
-                            `;
+                            // If there are valid ingredients for this recipe
+                            if (ingredientLocationsList) {
+                                document.getElementById("itemList").innerHTML += `
+                                    <h2 style="text-align:center">${recipeName}</h2>
+                                    <p><strong>Level Required:</strong> ${level}</p>
+                                    <ul>${ingredientLocationsList}</ul>
+                                `;
+                            }
                         }
                     }
 
